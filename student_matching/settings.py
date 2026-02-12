@@ -47,11 +47,18 @@ if database_url:
     }
 elif is_render:
     # Configuration PostgreSQL manuelle pour Render (solution de secours)
-    render_db_name = os.environ.get('RENDER_DB_NAME', 'fuegodelcorazon')
-    render_db_user = os.environ.get('RENDER_DB_USER', 'fuegodelcorazon') 
-    render_db_password = os.environ.get('RENDER_DB_PASSWORD', '')
-    render_db_host = os.environ.get('RENDER_DB_HOST', 'localhost')
-    render_db_port = os.environ.get('RENDER_DB_PORT', '5432')
+    render_db_name = os.environ.get('RENDER_DB_NAME') or os.environ.get('PGDATABASE') or os.environ.get('DB_NAME', 'fuegodelcorazon')
+    render_db_user = os.environ.get('RENDER_DB_USER') or os.environ.get('PGUSER') or os.environ.get('DB_USER', 'fuegodelcorazon') 
+    render_db_password = os.environ.get('RENDER_DB_PASSWORD') or os.environ.get('PGPASSWORD') or os.environ.get('DB_PASSWORD', '')
+    render_db_host = os.environ.get('RENDER_DB_HOST') or os.environ.get('PGHOST') or os.environ.get('DB_HOST', 'localhost')
+    render_db_port = os.environ.get('RENDER_DB_PORT') or os.environ.get('PGPORT') or os.environ.get('DB_PORT', '5432')
+    
+    print(f"Checking PostgreSQL credentials:")
+    print(f"  DB_NAME: {render_db_name}")
+    print(f"  DB_USER: {render_db_user}")
+    print(f"  DB_HOST: {render_db_host}")
+    print(f"  DB_PORT: {render_db_port}")
+    print(f"  DB_PASSWORD: {'SET' if render_db_password else 'NOT SET'}")
     
     if render_db_password:
         DATABASES = {
@@ -66,7 +73,7 @@ elif is_render:
         }
         print(f"Using PostgreSQL with manual config for Render")
     else:
-        print("WARNING: No PostgreSQL credentials found, falling back to SQLite")
+        print("WARNING: No PostgreSQL password found, falling back to SQLite")
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
