@@ -34,11 +34,47 @@ ALLOWED_HOSTS = [
 # ======================
 
 # Configuration de la base de données pour Render (PostgreSQL)
-if 'DATABASE_URL' in os.environ:
+# Vérification multiple pour s'assurer que PostgreSQL est utilisé en production
+database_url = os.environ.get('DATABASE_URL') or os.environ.get('RENDER_DATABASE_URL')
+
+# Force PostgreSQL si nous sommes sur Render (détection par hostname)
+is_render = any('.onrender.com' in host for host in ALLOWED_HOSTS)
+
+if database_url:
+    print(f"Using PostgreSQL database: {database_url[:50]}...")
     DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+        'default': dj_database_url.parse(database_url)
     }
+elif is_render:
+    # Configuration PostgreSQL manuelle pour Render (solution de secours)
+    render_db_name = os.environ.get('RENDER_DB_NAME', 'fuegodelcorazon')
+    render_db_user = os.environ.get('RENDER_DB_USER', 'fuegodelcorazon') 
+    render_db_password = os.environ.get('RENDER_DB_PASSWORD', '')
+    render_db_host = os.environ.get('RENDER_DB_HOST', 'localhost')
+    render_db_port = os.environ.get('RENDER_DB_PORT', '5432')
+    
+    if render_db_password:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': render_db_name,
+                'USER': render_db_user,
+                'PASSWORD': render_db_password,
+                'HOST': render_db_host,
+                'PORT': render_db_port,
+            }
+        }
+        print(f"Using PostgreSQL with manual config for Render")
+    else:
+        print("WARNING: No PostgreSQL credentials found, falling back to SQLite")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 else:
+    print("Using SQLite database (development mode)")
     # Configuration locale (SQLite)
     DATABASES = {
         'default': {
