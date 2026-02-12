@@ -4,7 +4,6 @@ Django settings for student_matching project.
 
 from pathlib import Path
 import os
-import dj_database_url
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,7 +14,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production-very-important!')
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG setting pour développement local
+if 'DATABASE_URL' in os.environ:
+    DEBUG = config('DEBUG', default=False, cast=bool)
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -29,19 +32,13 @@ ALLOWED_HOSTS = [
 # DATABASE
 # ======================
 
-# Configuration de la base de données pour Render (PostgreSQL)
-if 'DATABASE_URL' in os.environ:
-    DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+# Configuration de la base de données
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    # Configuration locale (SQLite)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 
 # ======================
@@ -98,18 +95,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'student_matching.wsgi.application'
-
-
-# ======================
-# DATABASE (PostgreSQL via Render)
-# ======================
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
-    )
-}
 
 
 # ======================
