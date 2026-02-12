@@ -1,0 +1,33 @@
+services:
+  # Service Web Django
+  - type: web
+    name: fuegodelcorazon
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn student_matching.wsgi:application
+    healthCheckPath: /
+    
+    # Variables d'environnement
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: PYTHON_VERSION
+        value: 3.14.3
+      - key: WEB_CONCURRENCY
+        value: 1
+        
+    # Configuration de la base de données PostgreSQL
+    databases:
+      - name: fuegodelcorazon-db
+        databaseName: fuegodelcorazon
+        user: fuegodelcorazon
+
+# Service de base de données PostgreSQL
+databases:
+  - name: fuegodelcorazon-db
+    databaseName: fuegodelcorazon
+    user: fuegodelcorazon
+    plan: free
