@@ -22,27 +22,6 @@ services:
         fromDatabase:
           name: fuegodelcorazon-db
           property: connectionString
-      # Variables PostgreSQL manuelles pour Render
-      - key: RENDER_DB_NAME
-        fromDatabase:
-          name: fuegodelcorazon-db
-          property: databaseName
-      - key: RENDER_DB_USER
-        fromDatabase:
-          name: fuegodelcorazon-db
-          property: user
-      - key: RENDER_DB_PASSWORD
-        fromDatabase:
-          name: fuegodelcorazon-db
-          property: password
-      - key: RENDER_DB_HOST
-        fromDatabase:
-          name: fuegodelcorazon-db
-          property: host
-      - key: RENDER_DB_PORT
-        fromDatabase:
-          name: fuegodelcorazon-db
-          property: port
         
     # Configuration de la base de données PostgreSQL
     databases:
