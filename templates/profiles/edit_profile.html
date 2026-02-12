@@ -1,0 +1,474 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier mon Profil - Student Matching{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Variables de couleur romantiques */
+:root {
+    --romantic-primary: #ff6b9d;
+    --romantic-secondary: #c44569;
+    --romantic-accent: #f8b5d4;
+    --romantic-light: #ff8fab;
+    --romantic-dark: #2d1b3d;
+    --romantic-bg: #fff0f5;
+    --gradient-romantic: linear-gradient(135deg, #ff6b9d 0%, #f8b5d4 25%, #ff8fab 50%, #c44569 75%, #ff6b9d 100%);
+    --gradient-soft: linear-gradient(135deg, #ffe0ec 0%, #fff0f5 50%, #ffe0ec 100%);
+}
+
+/* Container principal STP */
+.edit-profile-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff 0%, #fff0f5 50%, #ffe0ec 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 0;
+}
+
+.edit-profile-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 107, 157, 0.05) 0%, transparent 70%);
+    animation: shimmer-stp 8s ease-in-out infinite;
+}
+
+@keyframes shimmer-stp {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-30%, -30%) rotate(180deg); }
+}
+
+/* Carte de modification STP */
+.edit-profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 3rem;
+    box-shadow: 0 25px 60px rgba(255, 107, 157, 0.2);
+    border: 2px solid rgba(255, 107, 157, 0.1);
+    position: relative;
+    overflow: hidden;
+    max-width: 600px;
+    width: 100%;
+    margin: 2rem;
+    animation: card-entry-stp 0.8s ease-out;
+}
+
+@keyframes card-entry-stp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+}
+
+.edit-profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-romantic);
+    opacity: 0.8;
+}
+
+.edit-profile-card::after {
+    content: '💝';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    animation: float-corner-stp 4s ease-in-out infinite;
+}
+
+@keyframes float-corner-stp {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(5deg); }
+}
+
+/* Header romantique */
+.edit-profile-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.edit-profile-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: var(--gradient-romantic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+    position: relative;
+}
+
+.edit-profile-title::before {
+    content: '💕';
+    position: absolute;
+    top: -15px;
+    left: -25px;
+    font-size: 1.2rem;
+    animation: pulse-title-stp 2s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+.edit-profile-title::after {
+    content: '💖';
+    position: absolute;
+    top: -15px;
+    right: -25px;
+    font-size: 1.2rem;
+    animation: pulse-title-stp 2s ease-in-out infinite 1s;
+    opacity: 0.6;
+}
+
+@keyframes pulse-title-stp {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.edit-profile-subtitle {
+    color: var(--romantic-dark);
+    opacity: 0.8;
+    font-weight: 300;
+    font-size: 1.1rem;
+}
+
+/* Formulaire STP */
+.edit-profile-form {
+    margin-bottom: 2rem;
+}
+
+.form-group-stp {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-label-stp {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--romantic-dark);
+    font-size: 1rem;
+    position: relative;
+}
+
+.form-label-stp::before {
+    content: '💕';
+    position: absolute;
+    top: -5px;
+    left: -20px;
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+
+.form-input-stp {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(255, 107, 157, 0.2);
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.form-input-stp:focus {
+    outline: none;
+    border-color: var(--romantic-primary);
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+
+.form-input-stp::placeholder {
+    color: rgba(45, 27, 61, 0.5);
+    font-style: italic;
+}
+
+/* Textarea STP */
+.form-textarea-stp {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(255, 107, 157, 0.2);
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: relative;
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-textarea-stp:focus {
+    outline: none;
+    border-color: var(--romantic-primary);
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+
+/* Sélecteurs spéciaux pour les champs */
+.form-select-stp {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(255, 107, 157, 0.2);
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: relative;
+    cursor: pointer;
+}
+
+.form-select-stp:focus {
+    outline: none;
+    border-color: var(--romantic-primary);
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+
+/* Photo actuelle */
+.photo-current {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.photo-current img {
+    border-radius: 20px;
+    border: 3px solid var(--romantic-primary);
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.2);
+    transition: all 0.3s ease;
+}
+
+.photo-current img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.3);
+}
+
+/* Boutons STP */
+.edit-profile-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-cancel-stp {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(108, 117, 125, 0.3);
+}
+
+.btn-cancel-stp:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(108, 117, 125, 0.4);
+    background: linear-gradient(135deg, #5a6268, #3d4142);
+}
+
+.btn-save-stp {
+    padding: 1rem 2rem;
+    background: var(--gradient-romantic);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+}
+
+.btn-save-stp:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+    background: var(--gradient-accent);
+}
+
+/* Messages d'alerte STP */
+.alert-stp {
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    border: 2px solid transparent;
+    font-weight: 500;
+    animation: alert-entry-stp 0.5s ease-out;
+}
+
+@keyframes alert-entry-stp {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.alert-danger-stp {
+    background: linear-gradient(135deg, rgba(196, 69, 105, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%);
+    border-color: rgba(196, 69, 105, 0.3);
+    color: var(--romantic-secondary);
+}
+
+.alert-success-stp {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(248, 181, 212, 0.05) 100%);
+    border-color: rgba(255, 107, 157, 0.3);
+    color: var(--romantic-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .edit-profile-card {
+        margin: 1rem;
+        padding: 2rem;
+        max-width: 100%;
+    }
+    
+    .edit-profile-title {
+        font-size: 2rem;
+    }
+    
+    .edit-profile-title::before,
+    .edit-profile-title::after {
+        font-size: 1rem;
+        top: -10px;
+    }
+    
+    .form-input-stp,
+    .form-textarea-stp,
+    .form-select-stp {
+        padding: 0.875rem 1rem;
+    }
+    
+    .edit-profile-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-cancel-stp,
+    .btn-save-stp {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-profile-card {
+        margin: 0.5rem;
+        padding: 1.5rem;
+    }
+    
+    .edit-profile-title {
+        font-size: 1.8rem;
+    }
+    
+    .form-input-stp,
+    .form-textarea-stp,
+    .form-select-stp {
+        padding: 0.75rem 0.875rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fff 0%, #fff0f5 50%, #ffe0ec 100%); position: relative; overflow: hidden; padding: 2rem 0;">
+    <div class="edit-profile-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 30px; padding: 3rem; box-shadow: 0 25px 60px rgba(255, 107, 157, 0.2); border: 2px solid rgba(255, 107, 157, 0.1); position: relative; overflow: hidden; max-width: 600px; width: 100%; margin: 2rem;">
+        <!-- Header romantique -->
+        <div class="edit-profile-header" style="text-align: center; margin-bottom: 2.5rem; position: relative;">
+            <h1 class="edit-profile-title" style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #ff6b9d 0%, #f8b5d4 25%, #ff8fab 50%, #c44569 75%, #ff6b9d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem; text-shadow: 0 4px 20px rgba(255, 107, 157, 0.3); position: relative;">
+                💕 Modifier mon profil 💖
+            </h1>
+            <p class="edit-profile-subtitle" style="color: #2d1b3d; opacity: 0.8; font-weight: 300; font-size: 1.1rem;">
+                Mettez à jour vos informations
+            </p>
+        </div>
+        
+        <!-- Messages Django -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-stp alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="padding: 1rem 1.5rem; border-radius: 20px; margin-bottom: 1.5rem; border: 2px solid transparent; font-weight: 500; animation: alert-entry-stp 0.5s ease-out;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <!-- Formulaire STP -->
+        <form method="post" enctype="multipart/form-data" class="edit-profile-form" style="margin-bottom: 2rem;">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group-stp" style="margin-bottom: 1.5rem; position: relative;">
+                    <label for="{{ field.id_for_label }}" class="form-label-stp" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d1b3d; font-size: 1rem; position: relative;">
+                        💕 {{ field.label }}
+                    </label>
+                    {% if field.name == 'photo' %}
+                        {% if profile.photo %}
+                            <div class="photo-current" style="text-align: center; margin-bottom: 1rem;">
+                                <img src="{{ profile.photo.url }}" alt="Photo actuelle" style="max-width: 150px; border-radius: 20px; border: 3px solid #ff6b9d; box-shadow: 0 10px 30px rgba(255, 107, 157, 0.2); transition: all 0.3s ease;">
+                            </div>
+                        {% endif %}
+                        <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-input-stp" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid rgba(255, 107, 157, 0.2); border-radius: 20px; font-size: 1rem; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: relative;">
+                        <small class="form-text text-muted">Téléchargez une nouvelle photo de profil</small>
+                    {% elif field.name == 'bio' %}
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-textarea-stp" rows="4" placeholder="Parlez-nous de vous..." style="width: 100%; padding: 1rem 1.25rem; border: 2px solid rgba(255, 107, 157, 0.2); border-radius: 20px; font-size: 1rem; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: relative; resize: vertical; min-height: 120px;">{% if field.value %}{{ field.value }}{% endif %}</textarea>
+                    {% elif field.name == 'gender' %}
+                        <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-select-stp" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid rgba(255, 107, 157, 0.2); border-radius: 20px; font-size: 1rem; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: relative; cursor: pointer;">
+                            <option value="">Choisissez...</option>
+                            <option value="M" {% if field.value == 'M' %}selected{% endif %}>Homme</option>
+                            <option value="F" {% if field.value == 'F' %}selected{% endif %}>Femme</option>
+                            <option value="O" {% if field.value == 'O' %}selected{% endif %}>Autre</option>
+                        </select>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-input-stp" {% if field.value %}value="{{ field.value }}"{% endif %} placeholder="{{ field.label|lower }}" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid rgba(255, 107, 157, 0.2); border-radius: 20px; font-size: 1rem; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: relative;">
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger mt-2">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="edit-profile-buttons" style="display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem;">
+                <a href="{% url 'profiles:view_profile' %}" class="btn-cancel-stp" style="padding: 1rem 2rem; background: linear-gradient(135deg, #6c757d, #495057); color: white; border: none; border-radius: 25px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(108, 117, 125, 0.3);">
+                    Annuler
+                </a>
+                <button type="submit" class="btn-save-stp" style="padding: 1rem 2rem; background: linear-gradient(135deg, #ff6b9d 0%, #f8b5d4 25%, #ff8fab 50%, #c44569 75%, #ff6b9d 100%); color: white; border: none; border-radius: 25px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);">
+                    Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

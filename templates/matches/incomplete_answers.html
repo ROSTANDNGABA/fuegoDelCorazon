@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+
+{% block title %}Profil incomplet - Student Matching{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Loader overlay */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-content {
+    text-align: center;
+    color: white;
+}
+
+.loader-heart {
+    font-size: 3rem;
+    color: #e74c3c;
+    animation: heartbeat 1.2s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+.loader-text {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.loader-subtext {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.loader-progress {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin: 1rem auto;
+    overflow: hidden;
+}
+
+.loader-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+    border-radius: 2px;
+    animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+.content-fade-out {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loader -->
+<div id="loaderOverlay" class="loader-overlay">
+    <div class="loader-content">
+        <div class="loader-heart">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="loader-text">Vérification de vos réponses...</div>
+        <div class="loader-subtext">Analyse de votre progression</div>
+        <div class="loader-progress">
+            <div class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+<div id="mainContent" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Questionnaire incomplet</h3>
+                    <p class="mb-0">Votre progression vers l'amour parfait</p>
+                </div>
+                <div class="card-body">
+                    <!-- Barre de progression -->
+                    <div class="mb-4">
+                        <div class="progress">
+                            <div class="progress-bar" style="width: {{ completion_percentage }}%">
+                                {{ completion_percentage }}%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistiques -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h4>{{ answered_questions }}</h4>
+                                    <p class="mb-0">
+                                        <i class="fas fa-check-circle"></i> Questions répondues
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h4>{{ remaining_questions }}</h4>
+                                    <p class="mb-0">
+                                        <i class="fas fa-hourglass-half"></i> Questions restantes
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h4>{{ total_questions }}</h4>
+                                    <p class="mb-0">
+                                        <i class="fas fa-list"></i> Total des questions
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Message d'encouragement -->
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> 
+                        Vous devez répondre à <strong>TOUTES</strong> les questions avant de pouvoir voir vos matches.
+                        Plus vous répondez de questions, plus vos matches seront précis!
+                    </div>
+                    
+                    <!-- Bouton d'action -->
+                    <div class="text-center">
+                        <a href="{% url 'questions:questionnaire' %}" class="btn btn-primary">
+                            <i class="fas fa-heart"></i> 
+                            Continuer le questionnaire
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Animation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const mainContent = document.getElementById('mainContent');
+    
+    // Afficher le loader immédiatement
+    loaderOverlay.classList.add('active');
+    mainContent.classList.add('content-fade-out');
+    
+    // Messages du loader qui changent avec le temps
+    const loaderMessages = [
+        "Vérification de vos réponses...",
+        "Analyse de votre progression...",
+        "Calcul de votre taux de complétion...",
+        "Préparation de vos statistiques..."
+    ];
+    
+    let messageIndex = 0;
+    const loaderText = document.querySelector('.loader-text');
+    
+    // Changer le message toutes les 1.5 secondes
+    const messageInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loaderMessages.length;
+        loaderText.textContent = loaderMessages[messageIndex];
+    }, 1500);
+    
+    // Simuler le temps de chargement (1.5-2.5 secondes pour la page incomplète)
+    const loadingTime = 1500 + Math.random() * 1000;
+    
+    setTimeout(() => {
+        // Arrêter le changement de messages
+        clearInterval(messageInterval);
+        
+        // Message final
+        loaderText.textContent = "Analyse terminée!";
+        document.querySelector('.loader-subtext').textContent = "Affichage de votre progression...";
+        
+        // Cacher le loader et afficher le contenu
+        setTimeout(() => {
+            loaderOverlay.classList.remove('active');
+            mainContent.classList.remove('content-fade-out');
+            
+            // Masquer complètement le loader après la transition
+            setTimeout(() => {
+                loaderOverlay.style.display = 'none';
+            }, 300);
+            
+        }, 500);
+    }, loadingTime);
+    
+    // Gérer le cas où la page se charge très vite
+    if (document.readyState === 'complete') {
+        setTimeout(() => {
+            clearInterval(messageInterval);
+            loaderText.textContent = "Analyse terminée!";
+            document.querySelector('.loader-subtext').textContent = "Affichage de votre progression...";
+            
+            setTimeout(() => {
+                loaderOverlay.classList.remove('active');
+                mainContent.classList.remove('content-fade-out');
+                
+                setTimeout(() => {
+                    loaderOverlay.style.display = 'none';
+                }, 300);
+            }, 500);
+        }, 800);
+    }
+});
+
+// Gérer le rafraîchissement de la page
+window.addEventListener('beforeunload', function() {
+    document.getElementById('loaderOverlay').classList.add('active');
+});
+</script>
+{% endblock %}

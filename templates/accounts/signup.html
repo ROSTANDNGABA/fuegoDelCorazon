@@ -1,0 +1,551 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - Student Matching{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Variables de couleur romantiques */
+:root {
+    --romantic-primary: #ff6b9d;
+    --romantic-secondary: #c44569;
+    --romantic-accent: #f8b5d4;
+    --romantic-light: #ff8fab;
+    --romantic-dark: #2d1b3d;
+    --romantic-bg: #fff0f5;
+    --gradient-romantic: linear-gradient(135deg, #ff6b9d 0%, #f8b5d4 25%, #ff8fab 50%, #c44569 75%, #ff6b9d 100%);
+    --gradient-soft: linear-gradient(135deg, #ffe0ec 0%, #fff0f5 50%, #ffe0ec 100%);
+}
+
+/* Container principal STP */
+.signup-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff 0%, #fff0f5 50%, #ffe0ec 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 0;
+}
+
+.signup-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 107, 157, 0.05) 0%, transparent 70%);
+    animation: shimmer-stp 8s ease-in-out infinite;
+}
+
+@keyframes shimmer-stp {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-30%, -30%) rotate(180deg); }
+}
+
+/* Carte d'inscription STP */
+.signup-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 3rem;
+    box-shadow: 0 25px 60px rgba(255, 107, 157, 0.2);
+    border: 2px solid rgba(255, 107, 157, 0.1);
+    position: relative;
+    overflow: hidden;
+    max-width: 500px;
+    width: 100%;
+    margin: 2rem;
+    animation: card-entry-stp 0.8s ease-out;
+}
+
+@keyframes card-entry-stp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+}
+
+.signup-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-romantic);
+    opacity: 0.8;
+}
+
+.signup-card::after {
+    content: '💖';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    animation: float-corner-stp 4s ease-in-out infinite;
+}
+
+@keyframes float-corner-stp {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(5deg); }
+}
+
+/* Header romantique */
+.signup-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.signup-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: var(--gradient-romantic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+    position: relative;
+}
+
+.signup-title::before {
+    content: '💕';
+    position: absolute;
+    top: -15px;
+    left: -25px;
+    font-size: 1.2rem;
+    animation: pulse-title-stp 2s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+.signup-title::after {
+    content: '💖';
+    position: absolute;
+    top: -15px;
+    right: -25px;
+    font-size: 1.2rem;
+    animation: pulse-title-stp 2s ease-in-out infinite 1s;
+    opacity: 0.6;
+}
+
+@keyframes pulse-title-stp {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.signup-subtitle {
+    color: var(--romantic-dark);
+    opacity: 0.8;
+    font-weight: 300;
+    font-size: 1.1rem;
+}
+
+/* Formulaire STP */
+.signup-form {
+    margin-bottom: 2rem;
+}
+
+.form-group-stp {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-label-stp {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--romantic-dark);
+    font-size: 1rem;
+    position: relative;
+}
+
+.form-label-stp::before {
+    content: '💕';
+    position: absolute;
+    top: -5px;
+    left: -20px;
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+
+.form-input-stp {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(255, 107, 157, 0.2);
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.form-input-stp:focus {
+    outline: none;
+    border-color: var(--romantic-primary);
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+
+.form-input-stp::placeholder {
+    color: rgba(45, 27, 61, 0.5);
+    font-style: italic;
+}
+
+/* Sélecteurs spéciaux pour les champs */
+.form-select-stp {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(255, 107, 157, 0.2);
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: relative;
+    cursor: pointer;
+}
+
+.form-select-stp:focus {
+    outline: none;
+    border-color: var(--romantic-primary);
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+
+/* Bouton d'inscription STP */
+.signup-button {
+    width: 100%;
+    padding: 1.2rem;
+    background: var(--gradient-romantic);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+    margin-top: 1.5rem;
+}
+
+.signup-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.signup-button:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.signup-button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+    background: var(--gradient-accent);
+}
+
+.signup-button:active {
+    transform: translateY(-1px) scale(1.01);
+}
+
+/* Messages d'alerte STP */
+.alert-stp {
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    border: 2px solid transparent;
+    font-weight: 500;
+    animation: alert-entry-stp 0.5s ease-out;
+}
+
+@keyframes alert-entry-stp {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.alert-danger-stp {
+    background: linear-gradient(135deg, rgba(196, 69, 105, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%);
+    border-color: rgba(196, 69, 105, 0.3);
+    color: var(--romantic-secondary);
+}
+
+.alert-success-stp {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(248, 181, 212, 0.05) 100%);
+    border-color: rgba(255, 107, 157, 0.3);
+    color: var(--romantic-primary);
+}
+
+/* Lien de connexion STP */
+.login-link {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--romantic-dark);
+    opacity: 0.8;
+    font-size: 1rem;
+}
+
+.login-link p {
+    margin-bottom: 0.5rem;
+}
+
+.login-link a {
+    color: var(--romantic-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.login-link a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-romantic);
+    transition: width 0.3s ease;
+}
+
+.login-link a:hover::after {
+    width: 100%;
+}
+
+.login-link a:hover {
+    color: var(--romantic-secondary);
+    transform: translateY(-2px);
+}
+
+/* Icônes décoratives */
+.signup-icon {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 4rem;
+    color: var(--romantic-primary);
+    animation: icon-pulse-stp 3s ease-in-out infinite;
+}
+
+@keyframes icon-pulse-stp {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Steps indicator */
+.steps-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-soft);
+    border: 2px solid var(--romantic-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--romantic-primary);
+    position: relative;
+    animation: step-pulse-stp 2s ease-in-out infinite;
+}
+
+.step::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 107, 157, 0.2);
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.step:hover::after {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes step-pulse-stp {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .signup-card {
+        margin: 1rem;
+        padding: 2rem;
+        max-width: 100%;
+    }
+    
+    .signup-title {
+        font-size: 2rem;
+    }
+    
+    .signup-title::before,
+    .signup-title::after {
+        font-size: 1rem;
+        top: -10px;
+    }
+    
+    .form-input-stp,
+    .form-select-stp {
+        padding: 0.875rem 1rem;
+    }
+    
+    .signup-button {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    .steps-indicator {
+        gap: 0.5rem;
+    }
+    
+    .step {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-card {
+        margin: 0.5rem;
+        padding: 1.5rem;
+    }
+    
+    .signup-title {
+        font-size: 1.8rem;
+    }
+    
+    .form-input-stp,
+    .form-select-stp {
+        padding: 0.75rem 0.875rem;
+    }
+    
+    .signup-button {
+        padding: 0.875rem;
+        font-size: 0.9rem;
+    }
+    
+    .step {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <div class="signup-card">
+        <!-- Icône décorative -->
+        <div class="signup-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        
+        <!-- Header romantique -->
+        <div class="signup-header">
+            <h1 class="signup-title">Créer un compte</h1>
+            <p class="signup-subtitle">Rejoignez la communauté romantique</p>
+        </div>
+        
+        <!-- Steps indicator -->
+        <div class="steps-indicator">
+            <div class="step">1</div>
+            <div class="step">2</div>
+            <div class="step">3</div>
+        </div>
+        
+        <!-- Messages Django -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-stp alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <!-- Formulaire STP -->
+        <form method="post" class="signup-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group-stp">
+                    <label for="{{ field.id_for_label }}" class="form-label-stp">
+                        {{ field.label }}
+                    </label>
+                    {% if field.name == 'email' %}
+                        <input type="email" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               class="form-input-stp" 
+                               {% if field.value %}value="{{ field.value }}"{% endif %}
+                               placeholder="votre@email.com"
+                               required>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               class="form-input-stp" 
+                               {% if field.value %}value="{{ field.value }}"{% endif %}
+                               placeholder="{{ field.label|lower }}">
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger mt-2">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="signup-button">
+                S'inscrire
+            </button>
+        </form>
+        
+        <!-- Lien de connexion -->
+        <div class="login-link">
+            <p class="mb-0">
+                Déjà un compte? 
+                <a href="{% url 'accounts:login' %}">Se connecter</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

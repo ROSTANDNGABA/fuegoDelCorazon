@@ -1,0 +1,25 @@
+# Configuration Gunicorn pour Student Matching
+# Fichier de service systemd: /etc/systemd/system/gunicorn.service
+
+[Unit]
+Description=gunicorn daemon for Student Matching
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/your/project
+Environment="PATH=/path/to/your/venv/bin"
+EnvironmentFile=/path/to/your/.env
+ExecStart=/path/to/your/venv/bin/gunicorn \
+    --workers 3 \
+    --bind unix:/run/gunicorn.sock \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info \
+    --timeout 300 \
+    --keepalive 5 \
+    student_matching.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Aucun match - Appariement des étudiants{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Loader overlay */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-content {
+    text-align: center;
+    color: white;
+}
+
+.loader-heart {
+    font-size: 3rem;
+    color: #e74c3c;
+    animation: heartbeat 1.2s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+.loader-text {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.loader-subtext {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.loader-progress {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin: 1rem auto;
+    overflow: hidden;
+}
+
+.loader-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+    border-radius: 2px;
+    animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+.content-fade-out {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loader -->
+<div id="loaderOverlay" class="loader-overlay">
+    <div class="loader-content">
+        <div class="loader-heart">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="loader-text">Recherche de vos matches...</div>
+        <div class="loader-subtext">Analyse de compatibilité en cours</div>
+        <div class="loader-progress">
+            <div class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+<div id="mainContent" class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="text-center">Aucun match disponible</h3>
+      </div>
+
+      <div class="card-body text-center">
+        {% if not profile %}
+          <div class="alert alert-warning">
+            <h5>Profil incomplet</h5>
+            <p>
+              Vous devez compléter votre profil avant de pouvoir voir vos matchs.
+            </p>
+            <a href="{% url 'accounts:create_profile' %}" class="btn btn-primary">
+              Compléter mon profil
+            </a>
+          </div>
+        {% else %}
+          <div class="alert alert-info">
+            <h5>Pas encore de réponses</h5>
+            <p>
+              Vous devez répondre au questionnaire pour découvrir vos matchs compatibles.
+            </p>
+            <a href="{% url 'questions:questionnaire' %}" class="btn btn-primary">
+              Répondre au questionnaire
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// Animation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const mainContent = document.getElementById('mainContent');
+    
+    // Afficher le loader immédiatement
+    loaderOverlay.classList.add('active');
+    mainContent.classList.add('content-fade-out');
+    
+    // Messages du loader qui changent avec le temps
+    const loaderMessages = [
+        "Recherche de vos matches...",
+        "Analyse des profils compatibles...",
+        "Calcul des pourcentages de compatibilité...",
+        "Préparation de vos résultats..."
+    ];
+    
+    let messageIndex = 0;
+    const loaderText = document.querySelector('.loader-text');
+    
+    // Changer le message toutes les 1.5 secondes
+    const messageInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loaderMessages.length;
+        loaderText.textContent = loaderMessages[messageIndex];
+    }, 1500);
+    
+    // Simuler le temps de chargement (2-3 secondes pour la page sans matches)
+    const loadingTime = 2000 + Math.random() * 1000;
+    
+    setTimeout(() => {
+        // Arrêter le changement de messages
+        clearInterval(messageInterval);
+        
+        // Message final
+        loaderText.textContent = "Analyse terminée!";
+        document.querySelector('.loader-subtext').textContent = "Préparation de l'affichage...";
+        
+        // Cacher le loader et afficher le contenu
+        setTimeout(() => {
+            loaderOverlay.classList.remove('active');
+            mainContent.classList.remove('content-fade-out');
+            
+            // Masquer complètement le loader après la transition
+            setTimeout(() => {
+                loaderOverlay.style.display = 'none';
+            }, 300);
+            
+        }, 500);
+    }, loadingTime);
+    
+    // Gérer le cas où la page se charge très vite
+    if (document.readyState === 'complete') {
+        setTimeout(() => {
+            clearInterval(messageInterval);
+            loaderText.textContent = "Analyse terminée!";
+            document.querySelector('.loader-subtext').textContent = "Préparation de l'affichage...";
+            
+            setTimeout(() => {
+                loaderOverlay.classList.remove('active');
+                mainContent.classList.remove('content-fade-out');
+                
+                setTimeout(() => {
+                    loaderOverlay.style.display = 'none';
+                }, 300);
+            }, 500);
+        }, 1000);
+    }
+});
+
+// Gérer le rafraîchissement de la page
+window.addEventListener('beforeunload', function() {
+    document.getElementById('loaderOverlay').classList.add('active');
+});
+</script>
+{% endblock %}

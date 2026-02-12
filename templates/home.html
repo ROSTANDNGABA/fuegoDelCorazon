@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - Student Matching{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Variables de couleur romantiques */
+:root {
+    --primary-color: #ff6b9d;
+    --secondary-color: #c44569;
+    --accent-color: #f8b5d4;
+    --success-color: #ff6b9d;
+    --warning-color: #ff8fab;
+    --danger-color: #c44569;
+    --dark-color: #2d1b3d;
+    --light-color: #fff0f5;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    --gradient-romantic: linear-gradient(135deg, #ff6b9d 0%, #f8b5d4 25%, #ff8fab 50%, #c44569 75%, #ff6b9d 100%);
+    --gradient-soft: linear-gradient(135deg, #ffe0ec 0%, #fff0f5 50%, #ffe0ec 100%);
+}
+
+/* Hero section romantique */
+.hero-section {
+    background: var(--gradient-romantic);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 30px;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(255, 107, 157, 0.3);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    animation: shimmer 4s ease-in-out infinite;
+}
+
+.hero-section::after {
+    content: '💕 💖 💕 💖 💕';
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    opacity: 0.15;
+    animation: float-hearts 6s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-30%, -30%) rotate(180deg); }
+}
+
+@keyframes float-hearts {
+    0%, 100% { transform: translateX(-50%) translateY(0px); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 5;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, #ffe0ec 50%, #fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 20px rgba(196, 69, 105, 0.4);
+    position: relative;
+}
+
+.hero-title::before {
+    content: '💕';
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    font-size: 1.5rem;
+    animation: pulse-heart 2s ease-in-out infinite;
+    opacity: 0.4;
+}
+
+.hero-title::after {
+    content: '💖';
+    position: absolute;
+    top: -20px;
+    right: -30px;
+    font-size: 1.5rem;
+    animation: pulse-heart 2s ease-in-out infinite 0.5s;
+    opacity: 0.4;
+}
+
+@keyframes pulse-heart {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    opacity: 0.95;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: #ffe0ec;
+    text-shadow: 0 2px 10px rgba(196, 69, 105, 0.3);
+}
+
+.hero-divider {
+    border: none;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255, 224, 236, 0.8), transparent);
+    margin: 2rem 0;
+    border-radius: 2px;
+    position: relative;
+}
+
+.hero-divider::before {
+    content: '💕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--gradient-romantic);
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+/* Alert styling */
+.alert-custom {
+    background: linear-gradient(135deg, rgba(255, 167, 38, 0.1) 0%, rgba(255, 167, 38, 0.05) 100%);
+    border: 2px solid rgba(255, 167, 38, 0.3);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.alert-custom .alert-icon {
+    font-size: 1.5rem;
+    color: var(--warning-color);
+    margin-right: 1rem;
+}
+
+.alert-custom .alert-title {
+    font-weight: 700;
+    color: var(--warning-color);
+    margin-bottom: 0.5rem;
+}
+
+.alert-custom .alert-text {
+    color: var(--dark-color);
+    opacity: 0.8;
+}
+
+.btn-alert {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.btn-alert:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+/* Feature cards romantiques */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, #fff 0%, #fff0f5 100%);
+    border-radius: 25px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    box-shadow: 0 10px 40px rgba(255, 107, 157, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--gradient-romantic);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(255, 107, 157, 0.25);
+    border-color: rgba(255, 107, 157, 0.3);
+}
+
+.feature-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--gradient-romantic);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.feature-icon::after {
+    content: '💕';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 1rem;
+    background: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+    opacity: 0.7;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.feature-title::after {
+    content: '💖';
+    position: absolute;
+    bottom: -5px;
+    right: -20px;
+    font-size: 0.8rem;
+    opacity: 0.3;
+}
+
+.feature-description {
+    color: var(--dark-color);
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.feature-btn {
+    background: var(--gradient-romantic);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 250px;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.feature-btn:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.feature-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 107, 157, 0.4);
+    background: var(--gradient-accent);
+    color: white;
+}
+
+.feature-btn i {
+    font-size: 0.9rem;
+}
+
+/* Coeurs flottants romantiques */
+.floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.heart {
+    position: absolute;
+    color: rgba(255, 107, 157, 0.15);
+    font-size: 1rem;
+    animation: float-up 15s linear infinite;
+}
+
+.heart:nth-child(1) { left: 10%; animation-delay: 0s; font-size: 1.2rem; }
+.heart:nth-child(2) { left: 20%; animation-delay: 2s; font-size: 0.8rem; }
+.heart:nth-child(3) { left: 30%; animation-delay: 4s; font-size: 1.5rem; }
+.heart:nth-child(4) { left: 40%; animation-delay: 6s; font-size: 1rem; }
+.heart:nth-child(5) { left: 50%; animation-delay: 8s; font-size: 1.3rem; }
+.heart:nth-child(6) { left: 60%; animation-delay: 10s; font-size: 0.9rem; }
+.heart:nth-child(7) { left: 70%; animation-delay: 12s; font-size: 1.1rem; }
+.heart:nth-child(8) { left: 80%; animation-delay: 14s; font-size: 1.4rem; }
+.heart:nth-child(9) { left: 90%; animation-delay: 16s; font-size: 0.7rem; }
+
+@keyframes float-up {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.15;
+    }
+    90% {
+        opacity: 0.15;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 1.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .feature-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .feature-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 2rem 1rem;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .feature-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+    }
+    
+    .feature-title {
+        font-size: 1.2rem;
+    }
+    
+    .feature-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animations d'apparition */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feature-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.1s; }
+.feature-card:nth-child(2) { animation-delay: 0.2s; }
+.feature-card:nth-child(3) { animation-delay: 0.3s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Coeurs flottants romantiques -->
+<div class="floating-hearts">
+    <div class="heart">💕</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+</div>
+
+<div class="container mt-5">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content text-center">
+            <h1 class="hero-title">
+                <i class="fas fa-heart"></i>
+                Bienvenue, {{ user.username }}!
+            </h1>
+            <p class="hero-subtitle">Trouvez votre âme sœur</p>
+            <div class="hero-divider"></div>
+            
+            {% if not has_profile %}
+                <div class="alert-custom">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle alert-icon"></i>
+                        <div>
+                            <div class="alert-title">Profil incomplet!</div>
+                            <div class="alert-text">
+                                Vous n'avez pas encore complété votre profil.
+                            </div>
+                            <a href="{% url 'accounts:create_profile' %}" class="btn-alert">
+                                <i class="fas fa-user-edit"></i> Compléter mon profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Feature Cards -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h3 class="feature-title">Mon Profil</h3>
+            <p class="feature-description">
+                Gérez vos informations personnelles et mettez à jour votre profil pour trouver des matches plus pertinents.
+            </p>
+            <a href="{% url 'profiles:view_profile' %}" class="feature-btn">
+                <i class="fas fa-eye"></i>
+                Voir mon profil
+            </a>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3 class="feature-title">Questions</h3>
+            <p class="feature-description">
+                Répondez au questionnaire de compatibilité pour améliorer la précision de vos suggestions de matches.
+            </p>
+            <a href="{% url 'questions:questionnaire' %}" class="feature-btn">
+                <i class="fas fa-question-circle"></i>
+                Questionnaire
+            </a>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-heart-pulse"></i>
+            </div>
+            <h3 class="feature-title">Mes Matches</h3>
+            <p class="feature-description">
+                Découvrez vos compatibilités et trouvez les personnes qui correspondent le mieux à votre personnalité.
+            </p>
+            <a href="{% url 'matching:matches' %}" class="feature-btn">
+                <i class="fas fa-search"></i>
+                Voir mes matches
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion - Student Matching{% endblock %}
+
+{% block extra_css %}
+<style>
+.valentine-login-container {
+    background: linear-gradient(135deg, #ff6b9d, #a855f7, #ec4899);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.valentine-login-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #ff6b9d;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(255, 107, 157, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.valentine-login-header {
+    background: linear-gradient(45deg, #ff6b9d, #a855f7);
+    color: white;
+    border-radius: 20px 20px 0 0;
+    text-align: center;
+    padding: 2rem;
+}
+
+.valentine-login-title {
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.valentine-form-control {
+    border: 2px solid #ff6b9d;
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.valentine-form-control:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+
+.valentine-submit-btn {
+    background: linear-gradient(45deg, #ff6b9d, #ec4899);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: bold;
+    color: white;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.valentine-submit-btn:hover {
+    background: linear-gradient(45deg, #ec4899, #ff6b9d);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+}
+
+.valentine-link {
+    color: #ff6b9d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.valentine-link:hover {
+    color: #a855f7;
+    text-decoration: underline;
+}
+
+.valentine-heart-decoration {
+    color: #ff6b9d;
+    animation: heartbeat 2s ease-in-out infinite;
+    margin: 0 10px;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="valentine-login-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="valentine-login-card">
+                    <div class="valentine-login-header">
+                        <h3 class="valentine-login-title">
+                            <i class="fas fa-heart valentine-heart-decoration"></i>
+                            Connexion
+                            <i class="fas fa-heart valentine-heart-decoration"></i>
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Affichage des messages Django -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user"></i> {{ field.label }}
+                                    </label>
+                                    <input type="{{ field.field.widget.input_type }}" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.id_for_label }}" 
+                                           class="form-control valentine-form-control" 
+                                           {% if field.value %}value="{{ field.value }}"{% endif %}
+                                           placeholder="{{ field.label|lower }}">
+                                    {% if field.errors %}
+                                        <div class="text-danger mt-2">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="valentine-submit-btn">
+                                <i class="fas fa-heart"></i> Se connecter
+                            </button>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <p class="mb-0">
+                                Pas encore de compte? 
+                                <a href="{% url 'accounts:signup' %}" class="valentine-link">
+                                    <i class="fas fa-user-plus"></i> S'inscrire
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

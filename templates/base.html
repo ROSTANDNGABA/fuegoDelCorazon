@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Student Matching{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Variables de couleur romantiques pour la nav-bar */
+      :root {
+        --nav-primary-color: #ff6b9d;
+        --nav-secondary-color: #c44569;
+        --nav-accent-color: #f8b5d4;
+        --nav-gradient: linear-gradient(135deg, var(--nav-primary-color) 0%, var(--nav-secondary-color) 100%);
+        --nav-gradient-hover: linear-gradient(135deg, var(--nav-accent-color) 0%, var(--nav-primary-color) 100%);
+      }
+
+      /* Nav-bar romantique */
+      .navbar {
+        background: var(--nav-gradient) !important;
+        box-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+        border-bottom: 2px solid rgba(248, 181, 212, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .navbar:hover {
+        box-shadow: 0 6px 25px rgba(255, 107, 157, 0.4);
+      }
+
+      /* Brand romantique */
+      .navbar-brand {
+        color: white !important;
+        font-weight: 700;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 10px rgba(196, 69, 105, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .navbar-brand:hover {
+        color: var(--nav-accent-color) !important;
+        transform: translateY(-2px);
+        text-shadow: 0 4px 15px rgba(248, 181, 212, 0.5);
+      }
+
+      .navbar-brand i {
+        margin-right: 0.5rem;
+        animation: pulse-heart 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse-heart {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+
+      /* Liens de navigation romantiques */
+      .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500;
+        margin: 0 0.25rem;
+        border-radius: 20px;
+        padding: 0.5rem 1rem !important;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transition: left 0.3s ease;
+      }
+
+      .nav-link:hover::before {
+        left: 100%;
+      }
+
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+      }
+
+      .nav-link i {
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover i {
+        transform: scale(1.1);
+      }
+
+      /* Bouton de déconnexion romantique */
+      .btn-outline-light {
+        background: transparent !important;
+        border: 2px solid rgba(255, 255, 255, 0.7) !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 0.4rem 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-outline-light::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: all 0.3s ease;
+      }
+
+      .btn-outline-light:hover::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: white !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+      }
+
+      /* Toggler mobile romantique */
+      .navbar-toggler {
+        border: 2px solid rgba(255, 255, 255, 0.7) !important;
+        border-radius: 10px;
+        padding: 0.25rem 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .navbar-toggler:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: white !important;
+        transform: scale(1.05);
+      }
+
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+      }
+
+      /* Footer romantique */
+      footer {
+        background: linear-gradient(135deg, #fff0f5 0%, #ffe0ec 100%) !important;
+        border-top: 2px solid rgba(255, 107, 157, 0.2);
+        color: var(--nav-primary-color) !important;
+        font-weight: 500;
+      }
+
+      footer p {
+        margin: 0;
+        position: relative;
+      }
+
+      footer p::before {
+        content: '💕';
+        margin-right: 0.5rem;
+        opacity: 0.7;
+      }
+
+      footer p::after {
+        content: '💖';
+        margin-left: 0.5rem;
+        opacity: 0.7;
+      }
+
+      /* Responsive nav-bar */
+      @media (max-width: 768px) {
+        .navbar-brand {
+          font-size: 1.2rem;
+        }
+        
+        .nav-link {
+          margin: 0.25rem 0;
+          text-align: center;
+        }
+        
+        .btn-outline-light {
+          width: 100%;
+          margin-top: 0.5rem;
+        }
+      }
+    </style>
+    {% block extra_css %}
+    {% endblock %}
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="fas fa-heart"></i> 
+            Fuego del Corazón
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="fas fa-home"></i> Accueil
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profiles:view_profile' %}">
+                <i class="fas fa-user"></i> Mon Profil
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'questions:questionnaire' %}">
+                <i class="fas fa-heart"></i> Questions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'matching:matches' %}">
+                <i class="fas fa-heart-pulse"></i> Mes Matches
+              </a>
+            </li>
+            <li class="nav-item">
+              <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-light">Déconnexion</button>
+              </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:login' %}">
+                <i class="fas fa-sign-in-alt"></i> Connexion
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:signup' %}">
+                <i class="fas fa-user-plus"></i> Inscription
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container mt-4">
+      {% if messages %} {% for message in messages %}
+      <div
+        class="alert alert-{{ message.tags }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %} {% endif %} {% block content %} {% endblock %}
+    </main>
+
+    <footer>
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Script simple et robuste pour afficher/masquer les mots de passe
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== SCRIPT MOTS DE PASSE CHARGÉ ===');
+            
+            // Vérifier Font Awesome
+            const fontAwesomeLoaded = document.querySelector('link[href*="font-awesome"]');
+            console.log('Font Awesome CSS:', fontAwesomeLoaded ? 'CHARGÉ' : 'NON CHARGÉ');
+            
+            // Fonction toggle simple
+            function togglePassword(inputId) {
+                const input = document.getElementById(inputId);
+                if (!input) {
+                    console.error('Input non trouvé:', inputId);
+                    return;
+                }
+                
+                // Chercher le bouton toggle
+                let toggle = input.nextElementSibling;
+                if (toggle && toggle.className === 'password-toggle') {
+                    const eyeIcon = toggle.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        if (eyeIcon) {
+                            eyeIcon.textContent = '👁️'; // Eye slash emoji
+                        }
+                        toggle.title = 'Masquer';
+                        console.log('Mot de passe AFFICHÉ pour:', inputId);
+                    } else {
+                        input.type = 'password';
+                        if (eyeIcon) {
+                            eyeIcon.textContent = '👁'; // Eye emoji
+                        }
+                        toggle.title = 'Afficher';
+                        console.log('Mot de passe MASQUÉ pour:', inputId);
+                    }
+                }
+            }
+            
+            // Fonction pour créer les boutons
+            function createPasswordToggle(input) {
+                // Vérifier si le bouton existe déjà
+                const existingToggle = input.nextElementSibling;
+                if (existingToggle && existingToggle.className === 'password-toggle') {
+                    console.log('Bouton existe déjà pour:', input.id);
+                    return;
+                }
+                
+                // Créer le conteneur
+                const container = document.createElement('div');
+                container.style.position = 'relative';
+                container.style.display = 'inline-block';
+                container.style.width = '100%';
+                
+                // Insérer le conteneur AVANT l'input
+                input.parentNode.insertBefore(container, input);
+                container.appendChild(input);
+                
+                // Créer le bouton toggle
+                const toggle = document.createElement('button');
+                toggle.type = 'button';
+                toggle.className = 'password-toggle';
+                toggle.title = 'Afficher';
+                toggle.setAttribute('aria-label', 'Afficher le mot de passe');
+                toggle.onclick = function() {
+                    togglePassword(input.id);
+                };
+                
+                // Styles inline simples
+                toggle.style.cssText = `
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    border: 1px solid #ccc;
+                    color: #666;
+                    cursor: pointer;
+                    font-size: 14px;
+                    padding: 4px;
+                    border-radius: 4px;
+                    width: 28px;
+                    height: 28px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                `;
+                
+                // Créer l'icône simple
+                const icon = document.createElement('span');
+                icon.textContent = '👁';
+                icon.style.cssText = 'font-size: 14px; line-height: 1;';
+                toggle.appendChild(icon);
+                
+                // Ajouter le bouton après l'input dans le conteneur
+                container.appendChild(toggle);
+                
+                console.log('Bouton toggle créé pour:', input.id);
+            }
+            
+            // Fonction principale
+            function addPasswordToggles() {
+                console.log('Recherche des champs de mot de passe...');
+                
+                // Chercher tous les inputs de type password
+                const passwordInputs = document.querySelectorAll('input[type="password"]');
+                console.log('Champs de mot de passe trouvés:', passwordInputs.length);
+                
+                passwordInputs.forEach(function(input, index) {
+                    console.log('Traitement du champ', index + 1, ':', input.id);
+                    
+                    // Vérifier si le bouton existe déjà
+                    const existingToggle = input.nextElementSibling;
+                    if (existingToggle && existingToggle.className === 'password-toggle') {
+                        console.log('Bouton existe déjà pour:', input.id);
+                        return;
+                    }
+                    
+                    // Créer le bouton
+                    createPasswordToggle(input);
+                });
+            }
+            
+            // Initialiser
+            addPasswordToggles();
+            
+            // Observer pour les nouveaux champs
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) { // Element node
+                                const newPasswordInputs = node.querySelectorAll ? node.querySelectorAll('input[type="password"]') : [];
+                                if (newPasswordInputs.length > 0) {
+                                    console.log('Nouveaux champs de mot de passe détectés, réinitialisation...');
+                                    setTimeout(addPasswordToggles, 100);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            console.log('=== INITIALISATION TERMINÉE ===');
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

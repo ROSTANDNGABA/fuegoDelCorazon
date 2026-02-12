@@ -1,0 +1,1021 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Matches - Student Matching{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Variables de couleur romantiques */
+:root {
+    --primary-color: #ff6b9d;
+    --secondary-color: #c44569;
+    --accent-color: #f8b5d4;
+    --success-color: #ff6b9d;
+    --warning-color: #ff8fab;
+    --danger-color: #c44569;
+    --dark-color: #2d1b3d;
+    --light-color: #fff0f5;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    --gradient-romantic: linear-gradient(135deg, #ff6b9d 0%, #f8b5d4 25%, #ff8fab 50%, #c44569 75%, #ff6b9d 100%);
+    --gradient-soft: linear-gradient(135deg, #ffe0ec 0%, #fff0f5 50%, #ffe0ec 100%);
+}
+
+/* Loader overlay romantique */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.95) 0%, rgba(196, 69, 105, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-content {
+    text-align: center;
+    color: white;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.loader-heart {
+    font-size: 4rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: heartbeat 1.2s ease-in-out infinite, float 3s ease-in-out infinite;
+    margin-bottom: 1.5rem;
+}
+
+.loader-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.loader-subtext {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+}
+
+.loader-progress {
+    width: 250px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    margin: 1.5rem auto;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loader-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #fff, var(--accent-color));
+    border-radius: 3px;
+    animation: progress 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(240, 147, 251, 0.5);
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+/* Animation de disparition du contenu */
+.content-fade-out {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Header principal romantique */
+.matches-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.matches-header h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: var(--gradient-romantic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+    position: relative;
+}
+
+.matches-header h1::before {
+    content: '💕';
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    font-size: 1.5rem;
+    animation: pulse-heart 2s ease-in-out infinite;
+    opacity: 0.4;
+}
+
+.matches-header h1::after {
+    content: '💖';
+    position: absolute;
+    top: -20px;
+    right: -30px;
+    font-size: 1.5rem;
+    animation: pulse-heart 2s ease-in-out infinite 0.5s;
+    opacity: 0.4;
+}
+
+@keyframes pulse-heart {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+.matches-header p {
+    font-size: 1.3rem;
+    color: var(--dark-color);
+    opacity: 0.8;
+    font-weight: 300;
+}
+
+/* Grille des matches */
+.matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    justify-items: center;
+}
+
+/* Cartes de match modernes */
+.match-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.match-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 25px 70px rgba(102, 126, 234, 0.25);
+}
+
+.match-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.match-card:hover::before {
+    opacity: 1;
+}
+
+/* Header de la carte romantique */
+.match-header {
+    background: var(--gradient-romantic);
+    color: white;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.match-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-30%, -30%) rotate(180deg); }
+}
+
+.compatibility-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.compatibility-display {
+    position: relative;
+    z-index: 5;
+}
+
+.compatibility-number {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 2px 10px rgba(196, 69, 105, 0.2);
+}
+
+.compatibility-label {
+    font-size: 0.7rem;
+    opacity: 0.95;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.compatibility-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.compatibility-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fff, var(--accent-color));
+    border-radius: 3px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 15px rgba(240, 147, 251, 0.6);
+}
+
+/* Body de la carte romantique */
+.match-body {
+    padding: 1rem 0.75rem;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #fff0f5 100%);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+                var(--gradient-romantic) border-box;
+    margin: 0 auto 0.75rem;
+    object-fit: cover;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
+}
+
+.profile-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient-romantic);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    font-size: 1.5rem;
+    color: white;
+    border: 2px solid transparent;
+    background: linear-gradient(var(--primary-color), var(--secondary-color)) padding-box,
+                var(--gradient-romantic) border-box;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+}
+
+.match-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.match-info .badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    margin: 0.125rem;
+    font-size: 0.7rem;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.badge-age {
+    background: linear-gradient(135deg, var(--success-color), #ff8fab);
+    color: white;
+}
+
+.badge-gender {
+    background: var(--gradient-romantic);
+    color: white;
+}
+
+.match-info .bio {
+    color: var(--dark-color);
+    opacity: 0.8;
+    line-height: 1.4;
+    margin: 0.75rem 0;
+    font-style: italic;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.match-info .studies {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: 0.5rem;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+}
+
+/* Bouton de détails romantique */
+.details-section {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.btn-details {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    background: var(--gradient-romantic);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.btn-details::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.btn-details:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.btn-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+    background: var(--gradient-accent);
+    color: white;
+}
+
+.btn-details i {
+    font-size: 0.65rem;
+}
+
+/* Footer de la carte romantique */
+.match-footer {
+    background: linear-gradient(135deg, #fff0f5 0%, #ffe0ec 100%);
+    padding: 0.75rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.compatibility-footer {
+    text-align: left;
+}
+
+.compatibility-percentage {
+    font-size: 1rem;
+    font-weight: 800;
+    background: var(--gradient-romantic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.compatibility-text {
+    font-size: 0.65rem;
+    color: var(--dark-color);
+    opacity: 0.7;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.btn-heart {
+    background: linear-gradient(135deg, var(--danger-color), var(--primary-color));
+    color: white;
+}
+
+.btn-heart:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+}
+
+.btn-skip {
+    background: linear-gradient(135deg, #ff8fab, var(--warning-color));
+    color: white;
+}
+
+.btn-skip:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 143, 171, 0.4);
+}
+
+/* Section aucun match romantique */
+.no-matches-section {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.05) 0%, rgba(196, 69, 105, 0.05) 100%);
+    border-radius: 30px;
+    margin: 3rem 0;
+    border: 2px dashed rgba(255, 107, 157, 0.2);
+}
+
+.no-matches-icon {
+    font-size: 5rem;
+    background: var(--gradient-romantic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.no-matches-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+}
+
+.no-matches-text {
+    font-size: 1.2rem;
+    color: var(--dark-color);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.no-matches-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.no-matches-btn {
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary-gradient {
+    background: var(--gradient-romantic);
+    color: white;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+}
+
+.btn-outline-gradient {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-outline-gradient:hover {
+    background: var(--gradient-romantic);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .matches-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    
+    .match-card {
+        max-width: 280px;
+        min-height: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .matches-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .matches-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        justify-items: center;
+    }
+    
+    .match-card {
+        max-width: 260px;
+        min-height: 260px;
+    }
+    
+    .match-body {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .profile-avatar,
+    .profile-avatar-placeholder {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+    
+    .match-info h3 {
+        font-size: 1rem;
+    }
+    
+    .match-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+        padding: 0.5rem;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+    }
+    
+    .no-matches-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .no-matches-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .matches-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    
+    .match-card {
+        max-width: 240px;
+        min-height: 240px;
+    }
+    
+    .match-body {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .profile-avatar,
+    .profile-avatar-placeholder {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+    
+    .match-info h3 {
+        font-size: 0.9rem;
+    }
+    
+    .compatibility-number {
+        font-size: 1.5rem;
+    }
+    
+    .btn-details {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.65rem;
+    }
+    
+    .action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Animations d'apparition */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.match-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.match-card:nth-child(1) { animation-delay: 0.1s; }
+.match-card:nth-child(2) { animation-delay: 0.2s; }
+.match-card:nth-child(3) { animation-delay: 0.3s; }
+.match-card:nth-child(4) { animation-delay: 0.4s; }
+.match-card:nth-child(5) { animation-delay: 0.5s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loader -->
+<div id="loaderOverlay" class="loader-overlay">
+    <div class="loader-content">
+        <div class="loader-heart">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="loader-text">Recherche de vos matches...</div>
+        <div class="loader-subtext">Analyse de compatibilité en cours</div>
+        <div class="loader-progress">
+            <div class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+<div id="mainContent" class="container mt-5">
+    <!-- Header moderne -->
+    <div class="matches-header">
+        <h1>
+            <i class="fas fa-heart"></i>
+            Vos Matches
+        </h1>
+        <p class="lead">
+            Découvrez les personnes les plus compatibles avec vous
+        </p>
+    </div>
+
+    <!-- Grille des matches -->
+    <div class="matches-grid">
+        {% for match in matches %}
+        <div class="match-card">
+            <!-- Header avec compatibilité -->
+            <div class="match-header">
+                <div class="compatibility-badge">
+                    {% if match.compatibility_score >= 70 %}
+                    <i class="fas fa-fire"></i> Excellent
+                    {% elif match.compatibility_score >= 50 %}
+                    <i class="fas fa-heart"></i> Bon
+                    {% elif match.compatibility_score >= 30 %}
+                    <i class="fas fa-meh"></i> Moyen
+                    {% else %}
+                    <i class="fas fa-question"></i> Faible
+                    {% endif %}
+                </div>
+                
+                <div class="compatibility-display">
+                    <div class="compatibility-number">{{ match.compatibility_score }}%</div>
+                    <div class="compatibility-label">Compatibilité</div>
+                    <div class="compatibility-bar">
+                        <div class="compatibility-fill" style="width: {{ match.compatibility_score }}%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Body avec photo et informations -->
+            <div class="match-body">
+                <!-- Photo de profil -->
+                {% if match.profile.photo %}
+                <img src="{{ match.profile.photo.url }}" 
+                     alt="Photo de {{ match.user.username }}" 
+                     class="profile-avatar">
+                {% else %}
+                <div class="profile-avatar-placeholder">
+                    {{ match.user.username|first|upper }}
+                </div>
+                {% endif %}
+                
+                <!-- Informations principales -->
+                <div class="match-info">
+                    <h3>{{ match.user.username }}</h3>
+                    
+                    <!-- Badges d'informations -->
+                    <div class="mb-3">
+                        {% if match.profile.age %}
+                        <span class="badge badge-age">
+                            <i class="fas fa-birthday-cake"></i> {{ match.profile.age }} ans
+                        </span>
+                        {% endif %}
+                        
+                        {% if match.profile.gender %}
+                        <span class="badge badge-gender">
+                            {% if match.profile.gender == 'M' %}
+                            <i class="fas fa-mars"></i> Homme
+                            {% elif match.profile.gender == 'F' %}
+                            <i class="fas fa-venus"></i> Femme
+                            {% else %}
+                            <i class="fas fa-genderless"></i> Autre
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Bio -->
+                    {% if match.profile.bio %}
+                    <p class="bio">
+                        "{{ match.profile.bio|truncatewords:15 }}"
+                    </p>
+                    {% endif %}
+                    
+                    <!-- Études -->
+                    {% if match.profile.field_of_study %}
+                    <p class="studies">
+                        <i class="fas fa-graduation-cap"></i> {{ match.profile.field_of_study }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <!-- Bouton de détails -->
+                <div class="details-section">
+                    <a href="{% url 'profiles:view_other_profile' match.user.id %}" 
+                       class="btn-details"
+                       title="Voir le profil complet de {{ match.user.username }}">
+                        <i class="fas fa-user-circle"></i>
+                        Voir le profil
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Footer avec actions -->
+            <div class="match-footer">
+                <div class="compatibility-footer">
+                    <div class="compatibility-percentage">{{ match.compatibility_score }}%</div>
+                    <div class="compatibility-text">compatible</div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn btn-heart" title="Ajouter aux favoris">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="action-btn btn-skip" title="Ignorer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Section aucun match -->
+    {% if not matches %}
+    <div class="no-matches-section">
+        <div class="no-matches-icon">
+            <i class="fas fa-heart-broken"></i>
+        </div>
+        <h2 class="no-matches-title">Aucun match trouvé</h2>
+        <p class="no-matches-text">
+            Nous n'avons pas encore trouvé de personnes compatibles avec vous.<br>
+            Continuez à répondre au questionnaire pour améliorer vos chances !
+        </p>
+        <div class="no-matches-actions">
+            <a href="{% url 'questions:questionnaire' %}" class="no-matches-btn btn-primary-gradient">
+                <i class="fas fa-heart"></i> Répondre au questionnaire
+            </a>
+            <a href="{% url 'profiles:edit_profile' %}" class="no-matches-btn btn-outline-gradient">
+                <i class="fas fa-user"></i> Compléter mon profil
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Animation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const mainContent = document.getElementById('mainContent');
+    
+    // Afficher le loader immédiatement
+    loaderOverlay.classList.add('active');
+    mainContent.classList.add('content-fade-out');
+    
+    // Messages du loader qui changent avec le temps
+    const loaderMessages = [
+        "Recherche de vos matches...",
+        "Analyse des profils compatibles...",
+        "Calcul des pourcentages de compatibilité...",
+        "Préparation de vos résultats..."
+    ];
+    
+    let messageIndex = 0;
+    const loaderText = document.querySelector('.loader-text');
+    
+    // Changer le message toutes les 1.5 secondes
+    const messageInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loaderMessages.length;
+        loaderText.textContent = loaderMessages[messageIndex];
+    }, 1500);
+    
+    // Simuler le temps de chargement (2-4 secondes)
+    const loadingTime = 2000 + Math.random() * 2000;
+    
+    setTimeout(() => {
+        // Arrêter le changement de messages
+        clearInterval(messageInterval);
+        
+        // Message final
+        loaderText.textContent = "Matches trouvés!";
+        document.querySelector('.loader-subtext').textContent = "Affichage de vos résultats...";
+        
+        // Cacher le loader et afficher le contenu
+        setTimeout(() => {
+            loaderOverlay.classList.remove('active');
+            mainContent.classList.remove('content-fade-out');
+            
+            // Ajouter une animation d'apparition aux cartes
+            const cards = document.querySelectorAll('.match-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Masquer complètement le loader après la transition
+            setTimeout(() => {
+                loaderOverlay.style.display = 'none';
+            }, 300);
+            
+        }, 500);
+    }, loadingTime);
+    
+    // Gérer le cas où la page se charge très vite (contenu déjà prêt)
+    if (document.readyState === 'complete') {
+        // Si le contenu est déjà chargé, réduire le temps de chargement
+        setTimeout(() => {
+            clearInterval(messageInterval);
+            loaderText.textContent = "Matches trouvés!";
+            document.querySelector('.loader-subtext').textContent = "Affichage de vos résultats...";
+            
+            setTimeout(() => {
+                loaderOverlay.classList.remove('active');
+                mainContent.classList.remove('content-fade-out');
+                
+                const cards = document.querySelectorAll('.match-card');
+                cards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+                
+                setTimeout(() => {
+                    loaderOverlay.style.display = 'none';
+                }, 300);
+            }, 500);
+        }, 1000);
+    }
+});
+
+// Gérer le rafraîchissement de la page
+window.addEventListener('beforeunload', function() {
+    // Réafficher le loader si l'utilisateur rafraîchit la page
+    document.getElementById('loaderOverlay').classList.add('active');
+});
+</script>
+{% endblock %}
