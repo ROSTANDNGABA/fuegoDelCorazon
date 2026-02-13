@@ -19,11 +19,11 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 # ------------------------------
 # Hôtes autorisés
 # ------------------------------
-ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS",
-    default="localhost,fuegodelcorazon-3.onrender.com",
-    cast=Csv()
-)
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1", 
+    "fuegodelcorazon-3.onrender.com"
+]
 
 # ------------------------------
 # Applications installées
@@ -133,7 +133,10 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 # ------------------------------
 # Sécurité
 # ------------------------------
-CSRF_TRUSTED_ORIGINS = ["https://fuegodelcorazon-3.onrender.com"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://fuegodelcorazon-3.onrender.com",
+    "https://fuegodelcorazon.onrender.com"
+]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # ------------------------------
