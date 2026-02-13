@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -----------------------
 SECRET_KEY = "django-insecure-REMPLACE_PAR_TA_CLE_SECRETE"
 DEBUG = False  # Toujours False en production
-ALLOWED_HOSTS = ["fuegodelcorazon-1.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".railway.app", ".railway.internal"]
 
 # -----------------------
 # Applications installées
@@ -67,14 +67,25 @@ TEMPLATES = [
 WSGI_APPLICATION = "student_matching.wsgi.application"
 
 # -----------------------
-# Base de données (SQLite par défaut)
+# Base de données (PostgreSQL sur Railway)
 # -----------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+import dj_database_url
+
+# Configuration Railway - utilise automatiquement DATABASE_URL
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
+    print("Using PostgreSQL database on Railway")
+else:
+    # Configuration locale (SQLite)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+    print("Using SQLite database (development mode)")
 
 # -----------------------
 # Validation des mots de passe
