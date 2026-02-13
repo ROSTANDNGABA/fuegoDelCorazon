@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,13 +35,28 @@ except ImportError:
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-replace-in-production-8chars-min')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
 
 # ALLOWED_HOSTS - Ajouter les domaines pour le déploiement
 if HAS_DECOUPLE:
-    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+    # settings.py
+ ALLOWED_HOSTS = [
+    'fuegodelcorazon-3.onrender.com',  # Ton domaine Render
+    'localhost',
+    '127.0.0.1',
+]
+
+
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    # settings.py
+ ALLOWED_HOSTS = [
+    'fuegodelcorazon-3.onrender.com',  # Ton domaine Render
+    'localhost',
+    '127.0.0.1',
+]
+
+
 
 # Configuration HTTPS pour la production
 SECURE_SSL_REDIRECT = False  # Mettre à True en production
@@ -122,25 +138,11 @@ WSGI_APPLICATION = 'student_matching.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Import pour la configuration de base de données
-import os
 import dj_database_url
 
-# Configuration de la base de données pour Render (PostgreSQL)
-database_url = os.environ.get('DATABASE_URL')
-
-if database_url:
-    print(f"Using PostgreSQL database: {database_url[:50]}...")
-    DATABASES = {
-        'default': dj_database_url.parse(database_url)
-    }
-else:
-    print("Using SQLite database (development mode)")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}")
+}
 
 
 # Password validation
@@ -201,5 +203,4 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # Fix for Django 4.2.10 + Python 3.14 compatibility issue
 # Only set in development, not in production
 if DEBUG:
-    import os
     os.environ.setdefault('DJANGO_ALLOW_ASYNC_UNSAFE', 'true')
