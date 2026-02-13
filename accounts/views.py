@@ -70,9 +70,23 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('accounts:create_profile')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        login(self.request, self.object)
-        return response
+        try:
+            print("Début de form_valid dans SignUpView")
+            response = super().form_valid(form)
+            print("Utilisateur créé avec succès")
+            login(self.request, self.object)
+            print("Utilisateur connecté avec succès")
+            return response
+        except Exception as e:
+            print(f"Erreur dans SignUpView.form_valid: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
+
+    def form_invalid(self, form):
+        print("Formulaire invalide dans SignUpView")
+        print(f"Erreurs du formulaire: {form.errors}")
+        return super().form_invalid(form)
 
 @login_required
 def create_profile(request):

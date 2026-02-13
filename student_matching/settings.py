@@ -35,7 +35,7 @@ except ImportError:
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-replace-in-production-8chars-min')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "True") == "True"  # Forcer DEBUG=True temporairement pour diagnostiquer
 
 
 # ALLOWED_HOSTS - Ajouter les domaines pour le déploiement
