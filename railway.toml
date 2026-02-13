@@ -22,3 +22,4 @@ healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+startCommand = "gunicorn student_matching.wsgi:application"
