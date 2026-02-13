@@ -1,1 +1,1 @@
-web: gunicorn student_matching.wsgi
+web: gunicorn student_matching.wsgi:application
