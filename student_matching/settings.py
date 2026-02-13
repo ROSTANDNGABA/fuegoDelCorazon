@@ -41,20 +41,10 @@ DEBUG = os.getenv("DEBUG", "True") == "True"  # Forcer DEBUG=True temporairement
 # ALLOWED_HOSTS - Ajouter les domaines pour le déploiement
 if HAS_DECOUPLE:
     # settings.py
- ALLOWED_HOSTS = [
-    'fuegodelcorazon-3.onrender.com',  # Ton domaine Render
-    'localhost',
-    '127.0.0.1',
-]
-
-
+ ALLOWED_HOSTS = ['*']  # Accepte tous les domaines en production
 else:
     # settings.py
- ALLOWED_HOSTS = [
-    'fuegodelcorazon-3.onrender.com',  # Ton domaine Render
-    'localhost',
-    '127.0.0.1',
-]
+ ALLOWED_HOSTS = ['*']  # Accepte tous les domaines en production
 
 
 
