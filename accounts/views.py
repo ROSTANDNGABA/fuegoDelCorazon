@@ -12,38 +12,6 @@ from profiles.forms import StudentProfileForm
 from .forms import CustomUserCreationForm
 
 
-class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
-    redirect_authenticated_user = True
-    authentication_form = AuthenticationForm
-
-    def get_success_url(self):
-        # Redirection simple vers home après connexion
-        return '/'
-    
-    def form_valid(self, form):
-        try:
-            print("Début de form_valid dans CustomLoginView")
-            response = super().form_valid(form)
-            print("Connexion réussie, redirection vers:", self.get_success_url())
-            return response
-        except Exception as e:
-            print(f"Erreur dans CustomLoginView.form_valid: {e}")
-            import traceback
-            traceback.print_exc()
-            raise
-    
-    def form_invalid(self, form):
-        try:
-            print("Formulaire invalide dans CustomLoginView")
-            print(f"Erreurs du formulaire: {form.errors}")
-            return super().form_invalid(form)
-        except Exception as e:
-            print(f"Erreur dans CustomLoginView.form_invalid: {e}")
-            import traceback
-            traceback.print_exc()
-            raise
-
 class CustomLogoutView(LogoutView):
     next_page = '/accounts/login/'
 
