@@ -17,49 +17,9 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     authentication_form = AuthenticationForm
 
-    def form_invalid(self, form):
-        # Vérifier si l'utilisateur existe mais le mot de passe est incorrect
-        username = form.cleaned_data.get('username')
-        if username:
-            try:
-                user = User.objects.get(username=username)
-                # L'utilisateur existe mais le mot de passe est incorrect
-                messages.error(self.request, "Mot de passe incorrect. Veuillez réessayer.")
-            except User.DoesNotExist:
-                # L'utilisateur n'existe pas
-                messages.error(self.request, "Ce nom d'utilisateur n'existe pas. Veuillez créer un compte.")
-        else:
-            messages.error(self.request, "Veuillez entrer un nom d'utilisateur.")
-        
-        return super().form_invalid(form)
-
-    def form_valid(self, form):
-        # Laisser Django gérer la connexion normalement
-        response = super().form_valid(form)
-        
-        # Après connexion réussie, vérifier le profil et rediriger si nécessaire
-        user = form.get_user()
-        print(f"Utilisateur connecté: {user.username}")
-        
-        try:
-            profile = StudentProfile.objects.get(user=user)
-            print(f"Profil trouvé: {profile}")
-            
-            # Vérifier si le profil est complet
-            if profile.age and profile.gender and profile.field_of_study:
-                print("Profil complet, redirection vers home")
-                messages.success(self.request, f"Bienvenue {user.username} !")
-                return redirect('home')
-            else:
-                print("Profil incomplet, redirection vers édition")
-                messages.info(self.request, "Veuillez compléter votre profil pour continuer.")
-                return redirect('profiles:edit_profile')
-        except StudentProfile.DoesNotExist:
-            print("Aucun profil, redirection vers création")
-            messages.info(self.request, "Bienvenue ! Veuillez créer votre profil pour continuer.")
-            return redirect('profiles:create_profile')
-        
-        return response
+    def get_success_url(self):
+        # Redirection simple vers home après connexion
+        return '/'
 
 class CustomLogoutView(LogoutView):
     next_page = '/accounts/login/'
