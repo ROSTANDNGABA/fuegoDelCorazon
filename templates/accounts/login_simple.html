@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion - Student Matching{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Connexion</h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" name="username" id="username" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" name="password" id="password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    </form>
+                    
+                    <hr>
+                    <p class="text-center">
+                        Pas encore de compte? 
+                        <a href="{% url 'accounts:signup' %}">S'inscrire</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
