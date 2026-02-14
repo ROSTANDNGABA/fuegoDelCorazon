@@ -13,7 +13,7 @@ from .forms import CustomUserCreationForm
 
 
 class CustomLogoutView(LogoutView):
-    next_page = '/accounts/login/'
+    next_page = '/'
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
