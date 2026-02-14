@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Créer votre profil - Student Matching{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Créer votre profil</h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nom complet</label>
+                            <input type="text" class="form-control" name="name" id="name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bio" class="form-label">Biographie</label>
+                            <textarea class="form-control" name="bio" id="bio" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="photo" class="form-label">Photo de profil</label>
+                            <input type="file" class="form-control" name="photo" id="photo" accept="image/*">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Créer mon profil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

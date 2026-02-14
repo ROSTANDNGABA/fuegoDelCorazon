@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - Student Matching{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Inscription</h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" name="username" id="username" required>
+                            <small class="form-text text-muted">Choisissez un nom unique qui vous identifie</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" id="email">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password1" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" name="password1" id="password1" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password2" class="form-label">Confirmer le mot de passe</label>
+                            <input type="password" class="form-control" name="password2" id="password2" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+                    </form>
+                    
+                    <hr>
+                    <p class="text-center">
+                        Déjà un compte? 
+                        <a href="{% url 'accounts:login' %}">Se connecter</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

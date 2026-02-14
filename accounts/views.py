@@ -30,22 +30,8 @@ def create_profile(request):
     # Vérifier si l'utilisateur a déjà un profil
     try:
         existing_profile = StudentProfile.objects.get(user=request.user)
-        messages.info(request, "Vous avez déjà un profil ! Vous pouvez le modifier ci-dessous.")
-        # Rediriger vers une vue de modification ou afficher le formulaire pré-rempli
-        if request.method == 'POST':
-            form = StudentProfileForm(request.POST, request.FILES, instance=existing_profile)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Profil mis à jour avec succès !")
-                return redirect('profiles:view_profile')
-        else:
-            form = StudentProfileForm(instance=existing_profile)
-        
-        return render(request, 'accounts/create_profile.html', {
-            'form': form, 
-            'editing': True,
-            'existing_profile': existing_profile
-        })
+        messages.info(request, "Vous avez déjà un profil !")
+        return redirect('home')
     except StudentProfile.DoesNotExist:
         # Créer un nouveau profil
         if request.method == 'POST':
@@ -59,7 +45,6 @@ def create_profile(request):
         else:
             form = StudentProfileForm()
         
-        return render(request, 'accounts/create_profile.html', {
-            'form': form, 
-            'editing': False
+        return render(request, 'accounts/create_profile_simple.html', {
+            'form': form
         })
