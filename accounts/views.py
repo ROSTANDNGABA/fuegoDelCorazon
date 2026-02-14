@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,24 @@ from django.contrib.auth.models import User
 from profiles.models import StudentProfile
 from profiles.forms import StudentProfileForm
 from .forms import CustomUserCreationForm
+
+
+def login_page(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+            else:
+                login(request, user)
+                return redirect('/')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'accounts/login_simple.html', {'form': form})
 
 
 class CustomLogoutView(LogoutView):
